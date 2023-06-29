@@ -1,5 +1,6 @@
 import java.util.Comparator;
 import java.util.PriorityQueue;
+import java.util.Stack;
 
 
 public class Test {
@@ -41,7 +42,7 @@ public class Test {
 
     public int solve(int[] info, int[][] edges){
         int answer = 0;
-        PriorityQueue<Node> pq = new PriorityQueue<>(Comparator.comparingInt(Node::getSheep).thenComparingInt(Node::getWolf));
+        PriorityQueue<Node> pq = new PriorityQueue<>(Comparator.comparingInt(Node::getSheep).reversed().thenComparingInt(Node::getWolf));
         boolean[] visited = new boolean[info.length];
         Node[] nodes = new Node[info.length];
 
@@ -68,45 +69,52 @@ public class Test {
         }
 
         
-        Node n = null;
-        while(!pq.isEmpty()){
-            n = pq.poll();
-            System.out.println(n.number+ " "+ n.sheep+ ", "+n.wolf);
-        }
-
+       Stack<Node> next = new Stack<>();
         
        // System.out.println(nodes[4].child1.number);
 
         Node start = new Node(-1);
         start.sheep = 0;
         start.wolf = 0;
+        pq.add(start);
         travel(start, nodes[0], visited, pq);
-        System.out.println("max: "+max);
+        System.out.println("max: "+pq.peek().sheep);
 
         return answer;
     }
 
     public void travel(Node parent, Node current, boolean[] visited, PriorityQueue<Node> pq){
 
-        // 최대값 갱신
-        if(parent.sheep+current.sheep > pq.peek().sheep) {
-            pq.add(new Node(current.number, parent.sheep+current.sheep, pq.peek().wolf));
-            max = Math.max(max, parent.sheep+current.sheep);
+        // 현재 위치에서 상태값 계산
+        int sh = pq.peek().sheep;
+        int sheep = Math.max(parent.sheep,pq.peek().sheep)+current.sheep;
+        int wolf = parent.wolf+current.wolf;
+        
+        // 양보다 늑대가 많으면 더 이상 탐색하지 않음
+         if(sheep > wolf) {
+          
+         
+            current.sheep = sheep;
+            current.wolf = wolf;
+            visited[current.number] = true;
          }
 
-         
+        // 최대값 갱신
+        if(sheep > pq.peek().sheep) {
+            pq.add(new Node(current.number, sheep, pq.peek().wolf));
+            max = Math.max(max, parent.sheep+current.sheep);
+        }
 
-        if(current.child1 != null && parent.sheep+current.sheep > ){
-            int newSheep = current.sheep+current.child1.sheep;
-            int newWolf = current.wolf+current.child1.wolf;
-                 travel(current, current.child1, visited, pq);
+        if(current.child1 != null && !visited[current.child1.number]){
+           
+            travel(current, current.child1, visited, pq);
        
         }
-        if(current.child2 != null)
+        if(current.child2 != null && !visited[current.child2.number])
             travel(current, current.child2, visited, pq);
             
 
-        return;
+   //     return;
     }
     
 }

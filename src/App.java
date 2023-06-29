@@ -4,8 +4,12 @@ public class App {
 
         Test t = new Test();
 
-        int[] info = {0,1,0,1,0,0};
-        int[][] edges = {{0,1},{0,2},{1,3},{1,4},{4,5}};
+        System.out.println(Error.valueOf("E0000").getError());
+
+        System.out.println(Enum.valueOf(Error.class, "E0000"));
+      System.out.println(Error.E0000.getError());
+        int[] info = {0,0,1,1,1,0,1,0,1,0,1,1};
+        int[][] edges = {{0,1},{1,2},{0,8},{1,4},{8,7},{9,10},{9,11},{4,3},{6,5},{4,6},{8,9}};
 
 
         t.solve(info, edges);
